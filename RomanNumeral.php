@@ -2,43 +2,41 @@
 
 class RomanNumeral
 {
-    public $numeral;
+    public function __construct ( $numeral )
+    {
+        $this->_value = $numeral;
+        $this->_lookup =array (
+        'I'=> 1,
+        'V' => 5,
+        'X' => 10,
+        'L' => 50,
+        'C' => 100,
+        'D' => 500,
+        'M' => 1000,
+        );
 
-    public $numerals = 'IVXLCDM';
-
-    public $num_array = array();
-
-
-    public function __construct($value){
-        $this->numeral = $value;
     }
 
-    public function isValid ( )
+    public function toInt ( )
     {
-        foreach (array('VV','LL','CC','DD') as $doubles)
-        {
-           if ( stripos( $this->numeral, $doubles) !== false )
-            return false;
+        return $this->addEmUp($this->parse());
+    }
+
+    public function parse() {
+        return str_split($this->_value );
+    }
+
+    public function addEmUp($numerals) {
+        $calculated = 0;
+        // array ('X', 'L', 'I', 'X')
+        $numerals = array_reverse($numerals);
+        // array ('X', 'I', 'L', 'X')
+        foreach ($numerals as $numeral) {
+            // numeral = X , calculated = 0
+
+            $calculated += $this->_lookup[$numeral];
         }
+        return $calculated;
+    }
 
-        foreach ( str_split($this->numeral) as $numeral )
-        {
-            if ( stripos( $this->numerals, $numeral ) === false )
-                return false;
-
-        } // END foreach
-
-
-
-        if ($this->numeral=='LC')
-            return false;
-
-        return true;
-    } // END isValid
-
-
-    public function getNumeral(){
-        return $this->numeral;
-    } // END getNumeral
-
-} // END RomanNumeral
+}
